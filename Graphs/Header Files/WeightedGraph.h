@@ -1,5 +1,5 @@
 //
-//  WeightedGraphPrinter.h
+//  WeightedWeightedGraph.h
 //  Practice
 //   S really this will print out the vertex, weight, accoridnlgy using ASCII Art 
 //  Created by Gunnar Beck on 7/9/24.
@@ -19,10 +19,10 @@
 
 using namespace std;
 
-class GraphPrinter {
+class WeightedGraph {
 public:
     void printGraph(const vector<list<pair<int, int>>>& adj) const {
-        cout << "Graph adjacency list Vertex -> (Connected Vertex, Weight):" << endl;
+        cout << "Graph adjacency list:" << endl;
         for (int v = 0; v < adj.size(); ++v) {
             cout << v << " -> ";
             for (auto it = adj[v].begin(); it != adj[v].end(); ++it) {
