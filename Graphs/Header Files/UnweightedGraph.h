@@ -89,7 +89,7 @@ private:
             }
             if (x1 != x2 || y1 != y2) graphLines[y1][x1 * 2] = '-';
         }
-        graphLines[y2][x2 * 2] = ' ';
+        graphLines[y2][x2 * 2] = '>';
     }
 };
 
