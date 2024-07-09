@@ -1,7 +1,8 @@
 //
 //  GraphPrinter.h
 //  Practice
-//
+//  For note mind you, for a directed graph is going to have arrows, undirected graphs do not have arrows, cyclic means the graph is in a circular fashion, acyclic, non circular fashion, 
+//  weighted means there is a weight of connection on a specific edge or a series of edges between each of the vertecies, unweighted means there is no weight of connection between the vertecies.
 //  Created by Gunnar Beck on 7/9/24.
 //
 
