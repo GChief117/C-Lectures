@@ -1,95 +1,89 @@
-//
-//  GraphPrinter.h
-//  Practice
-//
-//  Created by Gunnar Beck on 7/9/24.
-//
+//tree printer header file
 
-#ifndef GRAPH_PRINTER_H
-#define GRAPH_PRINTER_H
+
+#ifndef TREEPRINTER_H
+#define TREEPRINTER_H
 
 #include <iostream>
-#include <vector>
-#include <list>
+#include <iomanip>
+#include <deque>
 #include <cmath>
 #include <string>
-#include <unordered_map>
 
 using namespace std;
 
-class GraphPrinter {
+class TreePrinter {
 public:
-    void printGraph(const vector<list<int>>& adj) const {
-        cout << "Graph adjacency list:" << endl;
-        for (int v = 0; v < adj.size(); ++v) {
-            cout << v << " -> ";
-            for (auto it = adj[v].begin(); it != adj[v].end(); ++it) {
-                cout << *it << " ";
-            }
-            cout << endl;
+    template <typename Node>
+    int height(Node* root) {
+        if (root == nullptr) return 0;
+        return 1 + max(height(root->left), height(root->right));
+    }
+
+    template <typename Node>
+    void printBranches(int branchLen, int nodeSpaceLen, int startLen, int nodesInThisLevel, const deque<Node*>& nodesQueue) {
+        typename deque<Node*>::const_iterator iter = nodesQueue.begin();
+        for (int i = 0; i < nodesInThisLevel / 2; i++) {
+            cout << ((i == 0) ? setw(startLen - 1) : setw(nodeSpaceLen - 2)) << "" << ((*iter++) ? "/" : " ");
+            cout << setw(2 * branchLen + 2) << "" << ((*iter++) ? "\\" : " ");
         }
         cout << endl;
-
-        cout << "Graph edges using ASCII art:" << endl;
-        renderGraph(adj);
     }
 
-private:
-    void renderGraph(const vector<list<int>>& adj) const {
-        const int RADIUS = 10;
-        const int DIAMETER = 2 * RADIUS + 1;
-        vector<string> graphLines(DIAMETER, string(DIAMETER * 2, ' '));
-        int size = adj.size();
-
-        unordered_map<int, pair<int, int>> positions;
-        for (int i = 0; i < size; ++i) {
-            double angle = 2.0 * M_PI * i / size;
-            int x = RADIUS + static_cast<int>(RADIUS * cos(angle));
-            int y = RADIUS + static_cast<int>(RADIUS * sin(angle));
-            positions[i] = {x, y};
+    template <typename Node>
+    void printNodes(int branchLen, int nodeSpaceLen, int startLen, int nodesInThisLevel, const deque<Node*>& nodesQueue) {
+        typename deque<Node*>::const_iterator iter = nodesQueue.begin();
+        for (int i = 0; i < nodesInThisLevel; i++, iter++) {
+            cout << ((i == 0) ? setw(startLen) : setw(nodeSpaceLen)) << "" << ((*iter && (*iter)->left) ? setfill('_') : setfill(' '));
+            cout << setw(branchLen + 2) << ((*iter) ? to_string((*iter)->key) : "");
+            cout << ((*iter && (*iter)->right) ? setfill('_') : setfill(' ')) << setw(branchLen) << "" << setfill(' ');
         }
-
-        for (int v = 0; v < size; ++v) {
-            auto [x, y] = positions[v];
-            graphLines[y][x * 2] = 'O';
-            graphLines[y][x * 2 + 1] = '0' + v;
-        }
-
-        for (int v = 0; v < size; ++v) {
-            for (auto w : adj[v]) {
-                drawArrow(graphLines, positions[v], positions[w]);
-            }
-        }
-
-        for (const auto& line : graphLines) {
-            cout << line << endl;
-        }
+        cout << endl;
     }
 
-    void drawArrow(vector<string>& graphLines, pair<int, int> from, pair<int, int> to) const {
-        int x1 = from.first, y1 = from.second;
-        int x2 = to.first, y2 = to.second;
-
-        int dx = abs(x2 - x1), dy = abs(y2 - y1);
-        int sx = x1 < x2 ? 1 : -1;
-        int sy = y1 < y2 ? 1 : -1;
-        int err = dx - dy;
-
-        while (true) {
-            if (x1 == x2 && y1 == y2) break;
-            int e2 = err * 2;
-            if (e2 > -dy) {
-                err -= dy;
-                x1 += sx;
-            }
-            if (e2 < dx) {
-                err += dx;
-                y1 += sy;
-            }
-            if (x1 != x2 || y1 != y2) graphLines[y1][x1 * 2] = '-';
+    template <typename Node>
+    void printLeaves(int indentSpace, int level, int nodesInThisLevel, const deque<Node*>& nodesQueue) {
+        typename deque<Node*>::const_iterator iter = nodesQueue.begin();
+        for (int i = 0; i < nodesInThisLevel; i++, iter++) {
+            cout << ((i == 0) ? setw(indentSpace + 2) : setw(2 * level + 2)) << ((*iter) ? to_string((*iter)->key) : "");
         }
-        graphLines[y2][x2 * 2] = '>';
+        cout << endl;
+    }
+
+    template <typename Node>
+    void printPretty(Node* root, int level, int indentSpace) {
+        int h = height(root);
+        int nodesInThisLevel = 1;
+
+        int branchLen = 2 * ((int)pow(2.0, h) - 1) - (3 - level) * (int)pow(2.0, h - 1);
+        int nodeSpaceLen = 2 + (level + 1) * (int)pow(2.0, h);
+        int startLen = branchLen + (3 - level) + indentSpace;
+
+        deque<Node*> nodesQueue;
+        nodesQueue.push_back(root);
+        for (int r = 1; r < h; r++) {
+            printBranches(branchLen, nodeSpaceLen, startLen, nodesInThisLevel, nodesQueue);
+            branchLen = branchLen / 2 - 1;
+            nodeSpaceLen = nodeSpaceLen / 2 + 1;
+            startLen = branchLen + (3 - level) + indentSpace;
+            printNodes(branchLen, nodeSpaceLen, startLen, nodesInThisLevel, nodesQueue);
+
+            for (int i = 0; i < nodesInThisLevel; i++) {
+                Node* currNode = nodesQueue.front();
+                nodesQueue.pop_front();
+                if (currNode) {
+                    nodesQueue.push_back(currNode->left);
+                    nodesQueue.push_back(currNode->right);
+                } else {
+                    nodesQueue.push_back(nullptr);
+                    nodesQueue.push_back(nullptr);
+                }
+            }
+            nodesInThisLevel *= 2;
+        }
+        printBranches(branchLen, nodeSpaceLen, startLen, nodesInThisLevel, nodesQueue);
+        printLeaves(indentSpace, level, nodesInThisLevel, nodesQueue);
     }
 };
 
-#endif // GRAPH_PRINTER_H
+#endif // TREEPRINTER_H
