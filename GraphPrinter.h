@@ -1,3 +1,10 @@
+//
+//  GraphPrinter.h
+//  Practice
+//
+//  Created by Gunnar Beck on 7/9/24.
+//
+
 #ifndef GRAPH_PRINTER_H
 #define GRAPH_PRINTER_H
 
@@ -6,6 +13,7 @@
 #include <list>
 #include <cmath>
 #include <string>
+#include <unordered_map>
 
 using namespace std;
 
@@ -33,14 +41,18 @@ private:
         vector<string> graphLines(DIAMETER, string(DIAMETER * 2, ' '));
         int size = adj.size();
 
-        vector<pair<int, int>> positions(size);
+        unordered_map<int, pair<int, int>> positions;
         for (int i = 0; i < size; ++i) {
             double angle = 2.0 * M_PI * i / size;
             int x = RADIUS + static_cast<int>(RADIUS * cos(angle));
             int y = RADIUS + static_cast<int>(RADIUS * sin(angle));
             positions[i] = {x, y};
+        }
+
+        for (int v = 0; v < size; ++v) {
+            auto [x, y] = positions[v];
             graphLines[y][x * 2] = 'O';
-            graphLines[y][x * 2 + 1] = '0' + i;
+            graphLines[y][x * 2 + 1] = '0' + v;
         }
 
         for (int v = 0; v < size; ++v) {
