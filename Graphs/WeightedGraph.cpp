@@ -10,13 +10,13 @@
 
 using namespace std;
 
-class WeightedGraph {
+class WeightedGraphClass {
 public:
     int V; // Number of vertices
     vector<list<pair<int, int>>> adj; // Adjacency list (vertex, weight)
 
     // Constructor to initialize the graph with V vertices
-    WeightedGraph(int V) : V(V) {
+    WeightedGraphClass(int V) : V(V) {
         adj.resize(V);
     }
 
@@ -126,7 +126,7 @@ public:
 };
 
 int main() {
-    WeightedGraph graph(6); // Create a graph with 6 vertices
+    WeightedGraphClass graph(6); // Create a graph with 6 vertices
 
     // Add edges to the graph with weights
     graph.addEdge(0, 1, 4);
