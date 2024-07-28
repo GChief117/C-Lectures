@@ -28,15 +28,6 @@ using namespace std;
  * which is filled from left to right.
  */
 
-class Node {
-public:
-    int data;
-    Node* left;
-    Node* right;
-
-    Node(int val) : data(val), left(nullptr), right(nullptr) {}
-};
-
 class BST {
 public:
     Node* root;
