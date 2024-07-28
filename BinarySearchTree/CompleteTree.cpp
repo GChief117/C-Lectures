@@ -1,6 +1,7 @@
 #include <iostream>
 #include <queue>
 #include <stack>
+#include "BST.h"
 using namespace std;
 
 /**
@@ -221,6 +222,9 @@ int main() {
     completeTree.insert(5);
     completeTree.insert(6);
 
+    BSTPrinter printer;
+    printer.printTree(tree.root);
+
     cout << "Complete Binary Tree:\n";
 
     cout << "In-order Traversal: ";
@@ -245,6 +249,8 @@ int main() {
     completeTree.dfsRec();
 
     completeTree.remove(3);
+    cout << "Updated Tree w/Removed Node 3: \n";
+    printer.printTree(tree.root);
 
     cout << "In-order Traversal after removing 3: ";
     completeTree.inorder();
